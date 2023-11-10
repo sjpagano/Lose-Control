@@ -8,12 +8,18 @@ public class Car : MonoBehaviour
 {
     [SerializeField] Rigidbody2D rb;
     public Vector3 car;
-    int carSpeed = 0;
     bool canAccel = true;
     bool canJump = false;
     bool jumpCooldown = false;
-    static bool Stop;
+    bool accelerating = false;
+    static bool Stop = true;
     AudioSource jumpSound;
+    float driftFactor = 0.98f;
+    float turnFactor = 3f;
+    float maxSpeed = 5;
+    float steeringInput = 0;
+    float rotationAngle = 0;
+    float velocityVsUp = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,8 +32,6 @@ public class Car : MonoBehaviour
         if (Stop)
         {
             rb.velocity = Vector3.zero;
-            carSpeed = 0;
-            Stop = false;
         }
         car = transform.position;
         if (canJump)
@@ -47,53 +51,100 @@ public class Car : MonoBehaviour
             }
         }
 
+
         if (Input.GetKeyDown("space") && canAccel && transform.tag == "Player")
         {
+            Stop = false;
+            Debug.Log("Accelerating");
             accelerate();
             canAccel = false;
             await Task.Delay(1000);
             canAccel = true;
         }
-        Vector2 lateralVelocity = (Vector2.Dot(rb.velocity, transform.right) * transform.right);
-        if (Input.GetKey("a"))
-        {
-            if (rb.velocity.x != 0 || rb.velocity.y != 0)
-            {
-                var rotation = Time.deltaTime * 300;
-                transform.Rotate(new Vector3(0, 0, rotation));
-                rb.velocity = Vector2.Lerp(rb.velocity, rb.velocity - lateralVelocity, 0.1f);
-                rb.AddForce(transform.right * Time.deltaTime * 200);
-            }
-        }
-        if (Input.GetKey("d"))
-        {
-            if (rb.velocity.x != 0 || rb.velocity.y != 0)
-            {
-                var rotation = Time.deltaTime * -300;
-                transform.Rotate(new Vector3(0, 0, rotation));
-                rb.velocity = Vector2.Lerp(rb.velocity, rb.velocity - lateralVelocity, 0.1f);
-                rb.AddForce(transform.right * Time.deltaTime * -200);
-            }
-        }
+
         if (Input.GetKeyDown("i"))
         {
             SceneManager.LoadScene(0);
         }
-        drive();
     }
 
-    void drive()
+    private void FixedUpdate()
     {
-        rb.velocity = transform.up * carSpeed;
+
+        if (Stop)
+            return;
+
+        ApplyEngineForce();
+
+        KillOrthogonalVelocity();
+
+        ApplySteering();
+    }
+
+    void ApplyEngineForce()
+    {
+
+        if (accelerating)
+            return;
+
+        //Create a force for the engine
+        Vector2 engineForceVector = transform.up * maxSpeed;
+
+        //Caculate how much "forward" we are going in terms of the direction of our velocity
+        velocityVsUp = Vector2.Dot(transform.up, rb.velocity);
+
+        //Limit so we cannot go faster than the max speed in the "forward" direction
+        if (velocityVsUp > maxSpeed)
+            return;
+
+        //Apply force and pushes the car forward
+        rb.AddForce(engineForceVector, ForceMode2D.Force);
+    }
+
+    void ApplySteering()
+    {
+        if (Stop)
+            return;
+        //Update the rotation angle based on input
+        rotationAngle -= steeringInput * turnFactor;
+
+        //Apply steering by rotating the car object
+        rb.MoveRotation(rotationAngle);
+    }
+
+    void KillOrthogonalVelocity()
+    {
+        //Get forward and right velocity of the car
+        Vector2 forwardVelocity = transform.up * Vector2.Dot(rb.velocity, transform.up);
+        Vector2 rightVelocity = transform.right * Vector2.Dot(rb.velocity, transform.right);
+
+        //Kill the orthogonal velocity (side velocity) based on how much the car should drift. 
+        rb.velocity = forwardVelocity + rightVelocity * driftFactor;
+    }
+
+
+    public void SetInputVector(Vector2 inputVector)
+    {
+        steeringInput = inputVector.x;
     }
 
     async void accelerate()
     {
-        carSpeed = 12;
-        while (carSpeed != 6)
+        accelerating = true;
+        velocityVsUp = Vector2.Dot(transform.up, rb.velocity);
+        rb.AddForce(transform.up * 100, ForceMode2D.Force);
+        while (velocityVsUp > maxSpeed)
+        {   
+            if (Stop)
+            {
+                break;
+            }
+            rb.velocity = transform.up * -8;
+            await Task.Delay(30);
+        }
+        if (velocityVsUp <= maxSpeed)
         {
-            carSpeed -= 1;
-            await Task.Delay(60);
+            accelerating = false;
         }
     }
 
@@ -107,9 +158,17 @@ public class Car : MonoBehaviour
 
     public void StopCar()
     {
+        rb.MoveRotation(transform.rotation);
         transform.tag = "Player";
+        canJump = false;
         Stop = true;
         Debug.Log("Car Stopped");
+    }
+
+    public float carSpeed()
+    {
+        float speed = rb.velocity.magnitude;
+        return speed;
     }
 
 }

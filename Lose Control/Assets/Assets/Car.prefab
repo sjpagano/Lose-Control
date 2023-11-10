@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 2232428518850714609}
   - component: {fileID: 6889807246414565704}
   - component: {fileID: 3797301248061071609}
-  - component: {fileID: 9135045907277802577}
   - component: {fileID: -7634821248819051676}
+  - component: {fileID: 8954493258409433688}
+  - component: {fileID: 1162974254349879751}
   m_Layer: 0
   m_Name: Car
   m_TagString: Player
@@ -108,20 +109,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &9135045907277802577
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4953391134782427307}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f73d6158239e3d64dbd188685c7ac477, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rb: {fileID: 3797301248061071609}
-  car: {x: 0, y: 0, z: 0}
 --- !u!82 &-7634821248819051676
 AudioSource:
   m_ObjectHideFlags: 0
@@ -218,6 +205,32 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &8954493258409433688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4953391134782427307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1936c43399a5c1b40959f8ce0b7b178f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1162974254349879751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4953391134782427307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f73d6158239e3d64dbd188685c7ac477, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 3797301248061071609}
+  car: {x: 0, y: 0, z: 0}
 --- !u!1 &5840310506470434045
 GameObject:
   m_ObjectHideFlags: 0
