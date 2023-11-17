@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CarInputHandler : MonoBehaviour
 {
+    // https://youtu.be/DVHcOS1E5OQ?si=gfoz-IFmdqiabUum
+    // Above video was used for the input handler and parts of the drift mechanics
     //Components
     Car car;
 
