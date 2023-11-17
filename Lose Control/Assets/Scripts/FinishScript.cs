@@ -23,11 +23,12 @@ public class FinishScript : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Player")
+        if (collision.gameObject.tag == "Player" || collision.gameObject.tag == "Airborn")
         {
-            carStop.StopCar();
+            carStop.nextLevel();
+            float angle = level.transform.rotation.eulerAngles.z;
+            carStop.StopCar(angle);
             collision.gameObject.transform.position = level.transform.position;
-            collision.gameObject.transform.rotation = level.transform.rotation;
         }
     }
 

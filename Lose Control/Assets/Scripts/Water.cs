@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class Water : MonoBehaviour
@@ -24,9 +25,9 @@ public class Water : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {
-            carStop.StopCar();
+            float angle = level.transform.rotation.eulerAngles.z;
+            carStop.StopCar(angle);
             collision.gameObject.transform.position = level.transform.position;
-            collision.gameObject.transform.rotation = level.transform.rotation;
         }
     }
 

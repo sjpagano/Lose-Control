@@ -1,11 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
-public class Spin : MonoBehaviour
+public class LongWater : MonoBehaviour
 {
-
-
     [SerializeField] GameObject level;
     [SerializeField] GameObject car;
     Car carStop;
@@ -18,18 +17,16 @@ public class Spin : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        var rotation = Time.deltaTime * 500;
-        transform.Rotate(0, 0, rotation);
+        
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Player" || collision.gameObject.tag == "Airborn")
+        if (collision.gameObject.tag == "Player")
         {
             float angle = level.transform.rotation.eulerAngles.z;
             carStop.StopCar(angle);
             collision.gameObject.transform.position = level.transform.position;
         }
     }
-
 }
